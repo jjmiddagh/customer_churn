@@ -1,0 +1,48 @@
+2024-11-17 07:36:46,932 - Best Random Forest Parameters: {'max_depth': 20, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+2024-11-17 07:36:46,937 - Best Random Forest Accuracy: 0.8434
+2024-11-17 07:36:46,941 - Best XGBoost Parameters: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+2024-11-17 07:36:46,945 - Best XGBoost Accuracy: 0.8444
+2024-11-17 07:43:36,326 - Logistic Regression Accuracy: 0.8270531400966183
+2024-11-17 07:43:36,771 - Random Forest Accuracy: 0.8547504025764895
+2024-11-17 07:43:49,281 - Best Random Forest Parameters: {'max_depth': 20, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+2024-11-17 07:43:49,287 - Best Random Forest Accuracy: 0.843435091938388
+2024-11-17 07:43:49,343 - Tuned Random Forest Accuracy: 0.8579710144927536
+2024-11-17 07:43:49,529 - XGBoost Accuracy: 0.8438003220611916
+2024-11-17 07:43:51,576 - Best XGBoost Parameters: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+2024-11-17 07:43:51,581 - Best XGBoost Accuracy: 0.8444031623672127
+2024-11-17 07:43:51,593 - Tuned XGBoost Accuracy: 0.8534621578099839
+2024-11-17 07:43:53,109 - Voting Classifier Accuracy: 0.851207729468599
+2024-11-17 07:44:05,230 - Voting Classifier model saved to Y:\DataScience\CustomerChurn\models\voting_classifier.pkl
+2024-11-17 07:53:13,455 - Logistic Regression Accuracy: 0.8270531400966183
+2024-11-17 07:53:13,903 - Random Forest Accuracy: 0.8547504025764895
+2024-11-17 07:53:26,758 - Best Random Forest Parameters: {'max_depth': 20, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+2024-11-17 07:53:26,765 - Best Random Forest Accuracy: 0.843435091938388
+2024-11-17 07:53:26,822 - Tuned Random Forest Accuracy: 0.8579710144927536
+2024-11-17 07:53:26,999 - XGBoost Accuracy: 0.8438003220611916
+2024-11-17 07:53:29,091 - Best XGBoost Parameters: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+2024-11-17 07:53:29,097 - Best XGBoost Accuracy: 0.8444031623672127
+2024-11-17 07:53:29,106 - Tuned XGBoost Accuracy: 0.8534621578099839
+2024-11-17 07:53:30,524 - Voting Classifier Accuracy: 0.851207729468599
+2024-11-17 07:53:41,561 - Voting Classifier model saved to Y:\DataScience\CustomerChurn\models\voting_classifier.pkl
+2024-11-17 07:59:57,092 - Logistic Regression Accuracy: 0.8270531400966183
+2024-11-17 07:59:57,548 - Random Forest Accuracy: 0.8547504025764895
+2024-11-17 08:00:10,356 - Best Random Forest Parameters: {'max_depth': 20, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+2024-11-17 08:00:10,363 - Best Random Forest Accuracy: 0.843435091938388
+2024-11-17 08:00:10,421 - Tuned Random Forest Accuracy: 0.8579710144927536
+2024-11-17 08:00:10,602 - XGBoost Accuracy: 0.8438003220611916
+2024-11-17 08:00:12,668 - Best XGBoost Parameters: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+2024-11-17 08:00:12,672 - Best XGBoost Accuracy: 0.8444031623672127
+2024-11-17 08:00:12,686 - Tuned XGBoost Accuracy: 0.8534621578099839
+2024-11-17 08:00:14,179 - Voting Classifier Accuracy: 0.851207729468599
+2024-11-17 08:00:25,051 - Voting Classifier model saved to Y:\DataScience\CustomerChurn\models\voting_classifier.pkl
+2025-08-07 11:01:04,192 - Logistic Regression Accuracy: 0.8270531400966183
+2025-08-07 11:01:04,654 - Random Forest Accuracy: 0.8547504025764895
+2025-08-07 11:01:42,358 - Best Random Forest Parameters: {'max_depth': 20, 'min_samples_leaf': 1, 'min_samples_split': 5, 'n_estimators': 200}
+2025-08-07 11:01:42,363 - Best Random Forest Accuracy: 0.843435091938388
+2025-08-07 11:01:42,424 - Tuned Random Forest Accuracy: 0.8579710144927536
+2025-08-07 11:01:42,623 - XGBoost Accuracy: 0.8438003220611916
+2025-08-07 11:01:44,189 - Best XGBoost Parameters: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+2025-08-07 11:01:44,196 - Best XGBoost Accuracy: 0.8444031623672127
+2025-08-07 11:01:44,208 - Tuned XGBoost Accuracy: 0.8534621578099839
+2025-08-07 11:01:45,595 - Voting Classifier Accuracy: 0.851207729468599
+2025-08-07 11:01:53,731 - Voting Classifier model saved to \\192.168.68.78\Documents\DataScience\customerchurn\models\voting_classifier.pkl
