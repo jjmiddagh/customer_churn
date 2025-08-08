@@ -11,7 +11,7 @@ CLEANED_DATA_PATH = rf"{BASE_DIR}\data\processed\cleaned_data.csv"
 DATA_WITH_IDS_PATH = rf"{BASE_DIR}\data\processed\data_with_ids.csv"
 
 MODEL_DIR = rf"{BASE_DIR}\models"
-VOTING_MODEL_PATH = rf"{MODEL_DIR}\voting_classifier.pkl"
+VOTING_MODEL_PATH = "models/voting_classifier.pkl"
 RF_TUNING_RESULTS_PATH = rf"{MODEL_DIR}\rf_gridsearch_summary.csv"
 XGB_TUNING_RESULTS_PATH = rf"{MODEL_DIR}\xgb_gridsearch_summary.csv"
 LOG_FILE_PATH = rf"{MODEL_DIR}\tuning_logs.log"
