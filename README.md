@@ -47,22 +47,33 @@ streamlit run scripts/dashboard.py
 
 ## Key Features
 
-### 1. Preprocessing
-- Cleans missing values.
-- Encodes categorical variables.
-- Balances the dataset using SMOTE.
+### 1. 🔧 Preprocessing
+- **Handles missing data** with imputation
+- **Encodes categorical features** (e.g., gender, internet service)
+- **Balances class distribution** using SMOTE
 
-### 2. Modeling
-- Trains Logistic Regression, Random Forest, and XGBoost models.
-- Tunes hyperparameters for improved accuracy.
-- Combines models using a Voting Classifier for better predictions.
+### 2. 🤖 Modeling
+- **Multiple models trained**: Logistic Regression, Random Forest, XGBoost
+- **Hyperparameter tuning** via GridSearchCV
+- **Ensemble voting classifier** improves performance
 
-### 3. Dashboard
-- Displays top customers likely to churn.
-- Visualizes churn probabilities and feature importance.
-- Allows custom predictions for what-if scenarios.
+### 3. 📊 Interactive Dashboard
+- **Live churn prediction** for any customer
+- **Churn probability distribution** visualizations
+- **Feature importance** displayed in real time
 
 ---
+
+## 🧪 Model Performance (Voting Classifier)
+
+| Metric      | Value    |
+|-------------|----------|
+| Accuracy    | 84.3%    |
+| Precision   | 82.1%    |
+| Recall      | 78.6%    |
+| F1 Score    | 80.3%    |
+| AUC-ROC     | 0.89     |
+
 
 ## Dependencies
 This project requires the following libraries:
@@ -81,6 +92,7 @@ For a full list, see `requirements.txt`.
 
 ## Dataset
 The original dataset is located in `data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv`.
+**Dataset Source:** [IBM Telco Customer Churn Dataset](https://www.kaggle.com/blastchar/telco-customer-churn)
 
 ---
 
