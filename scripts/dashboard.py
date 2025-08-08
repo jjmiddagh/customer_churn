@@ -1,130 +1,75 @@
 import streamlit as st
 import pandas as pd
-import joblib
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
-import config
+from sklearn.model_selection import train_test_split
+from imblearn.over_sampling import SMOTE
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, VotingClassifier
 
-st.set_page_config(layout="wide", page_title="Customer Churn Dashboard", page_icon="📉")
+# --- Load and preprocess data ---
+df = pd.read_csv("data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv")
+df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+df.dropna(inplace=True)
 
-# Load model and data
-model = joblib.load(config.VOTING_MODEL_PATH)
-data = pd.read_csv(config.CLEANED_DATA_PATH)
-data_with_ids = pd.read_csv(config.DATA_WITH_IDS_PATH)
+df_original = df.copy()  # Preserve customerID for dashboard
+df["Churn"] = df["Churn"].map({"No": 0, "Yes": 1})
 
-# Add customerID back for visualization
-data['CustomerID'] = data_with_ids['customerID']
+X = pd.get_dummies(df.drop(columns=["customerID", "Churn"]))
+y = df["Churn"]
 
-# Predict churn probabilities
-X = data.drop(['Churn', 'CustomerID'], axis=1)
-probabilities = model.predict_proba(X)[:, 1]
-data['Churn Probability'] = probabilities
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=42)
+
+smote = SMOTE(random_state=42)
+X_resampled, y_resampled = smote.fit_resample(X_train, y_train)
+
+# --- Train model ---
+clf1 = LogisticRegression(max_iter=1000)
+clf2 = RandomForestClassifier()
+clf3 = GradientBoostingClassifier()
+
+model = VotingClassifier(
+    estimators=[("lr", clf1), ("rf", clf2), ("gb", clf3)],
+    voting="soft"
+)
+model.fit(X_resampled, y_resampled)
+
+# --- Prepare dashboard dataset ---
+df_with_ids = df_original.iloc[X_test.index].copy()
+df_with_ids["Churn Probability"] = model.predict_proba(X_test)[:, 1]
+df_with_ids["Churn"] = y_test.reset_index(drop=True)
+
+# --- Streamlit App ---
+st.set_page_config(page_title="Customer Churn Dashboard", layout="wide")
 
 st.title("📉 Customer Churn Prediction Dashboard")
+st.markdown("Explore predicted churn risk across your customer base.")
 
-# Layout split
-col1, col2 = st.columns(2)
+# Sidebar filters
+st.sidebar.header("Filter by Churn Probability")
+prob_threshold = st.sidebar.slider("Minimum churn probability", 0.0, 1.0, 0.5, 0.01)
+filtered_data = df_with_ids[df_with_ids["Churn Probability"] >= prob_threshold]
 
-with col1:
-    st.subheader("🔝 Top 10 Customers Most Likely to Churn")
-    st.dataframe(data[['CustomerID', 'Churn Probability']]
-                 .sort_values(by='Churn Probability', ascending=False)
-                 .head(10))
+# Show filtered customer list
+st.subheader(f"Customers with Churn Probability ≥ {prob_threshold:.2f}")
+st.write(filtered_data[["customerID", "Churn Probability", "Churn"]].sort_values("Churn Probability", ascending=False))
 
-with col2:
-    st.subheader("📊 Feature Importance (Random Forest)")
-    rf_model = [est for name, est in model.estimators if isinstance(est, RandomForestClassifier)][0]
-    rf_importances = pd.Series(rf_model.feature_importances_, index=X.columns).sort_values(ascending=False)
-    fig_imp, ax_imp = plt.subplots()
-    rf_importances.head(10).plot(kind='bar', ax=ax_imp, title='Top 10 Features')
-    plt.ylabel("Importance")
-    plt.xlabel("Feature")
-    st.pyplot(fig_imp)
+# What-if tool
+st.sidebar.header("Simulate a New Customer")
+gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
+senior = st.sidebar.selectbox("Senior Citizen", [0, 1])
+partner = st.sidebar.selectbox("Has Partner?", ["Yes", "No"])
+monthly_charges = st.sidebar.slider("Monthly Charges", 0, 150, 70)
+tenure = st.sidebar.slider("Tenure (months)", 0, 72, 12)
 
-with st.expander("📈 Churn Probability Distribution"):
-    fig_dist, ax_dist = plt.subplots()
-    sns.histplot(data['Churn Probability'], bins=20, kde=True, ax=ax_dist)
-    plt.title("Distribution of Churn Probabilities")
-    plt.xlabel("Churn Probability")
-    plt.ylabel("Frequency")
-    st.pyplot(fig_dist)
-
-with st.expander("📃 Churn Rate by Contract Type"):
-    contract_churn = data_with_ids.groupby('Contract')['Churn'].mean().reset_index()
-    fig_contract, ax_contract = plt.subplots()
-    sns.barplot(x='Contract', y='Churn', data=contract_churn, ax=ax_contract, palette='Blues_d')
-    ax_contract.set_title("Churn Rate by Contract Type")
-    ax_contract.set_xlabel("Contract Type")
-    ax_contract.set_ylabel("Churn Rate")
-    st.pyplot(fig_contract)
-
-# Sidebar for custom prediction
-with st.sidebar:
-    st.header("🧪 Make a Prediction")
-
-    # Select representative row for types
-    sample_row = data.iloc[0]
-    user_input = {}
-
-    # Separate original feature names for UI (before one-hot)
-    original_features = data_with_ids.drop(columns=['customerID', 'Churn']).columns
-
-    for col in original_features:
-        if data_with_ids[col].dtype == 'object':
-            options = data_with_ids[col].dropna().unique().tolist()
-            user_input[col] = st.selectbox(f"{col}:", options)
-        else:
-            min_val = float(data_with_ids[col].min())
-            max_val = float(data_with_ids[col].max())
-            mean_val = float(data_with_ids[col].mean())
-            user_input[col] = st.slider(f"{col}:", min_val, max_val, mean_val)
-
-    st.write("🧾 Raw User Input", user_input)
-
-    if st.button("Predict Churn"):
-        st.write("🔄 Button clicked. Running prediction...")
-
-        # ✅ Load model
-        try:
-            model = joblib.load("scripts/voting_classifier.pkl")
-            st.success("✅ Model loaded successfully.")
-        except Exception as e:
-            st.error(f"❌ Failed to load model: {e}")
-            st.stop()
-
-        # ✅ Load model columns
-        try:
-            model_columns = joblib.load("scripts/model_columns.pkl")
-            st.success("✅ Model columns loaded successfully.")
-        except Exception as e:
-            st.error(f"❌ Failed to load model columns: {e}")
-            st.stop()
-
-        # ✅ Transform raw user input to encoded format
-        try:
-            user_df = pd.DataFrame([user_input])
-            user_encoded = pd.get_dummies(user_df)
-
-            # Ensure all expected columns are present
-            missing_cols = set(model_columns) - set(user_encoded.columns)
-            for col in missing_cols:
-                user_encoded[col] = 0
-
-            # Reorder columns to match model training
-            user_encoded = user_encoded[model_columns]
-
-            st.write("🧾 Encoded User Input", user_encoded)
-        except Exception as e:
-            st.error(f"⚠️ Failed to encode user input: {e}")
-            st.stop()
-
-        # ✅ Make prediction
-        try:
-            prediction = model.predict(user_encoded)[0]
-            probability = model.predict_proba(user_encoded)[0][1]
-            st.markdown(f"### 🔮 Prediction: {'**Churn**' if prediction == 1 else '**No Churn**'}")
-            st.markdown(f"### 📊 Churn Probability: **{probability:.2%}**")
-        except Exception as e:
-            st.error(f"❌ Prediction failed: {e}")
+if st.sidebar.button("Predict Churn"):
+    input_dict = {
+        "gender": gender,
+        "SeniorCitizen": senior,
+        "Partner": partner,
+        "MonthlyCharges": monthly_charges,
+        "tenure": tenure,
+    }
+    input_df = pd.DataFrame([input_dict])
+    input_df = pd.get_dummies(input_df).reindex(columns=X.columns, fill_value=0)
+    prob = model.predict_proba(input_df)[0][1]
+    st.sidebar.markdown(f"### 🔮 Churn Probability: **{prob:.2%}**")
 
