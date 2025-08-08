@@ -13,7 +13,9 @@ df.dropna(inplace=True)
 df_original = df.copy()  # Preserve customerID for dashboard
 df["Churn"] = df["Churn"].map({"No": 0, "Yes": 1})
 
-X = pd.get_dummies(df.drop(columns=["customerID", "Churn"]))
+# One-hot encode and align to numeric-only
+X = pd.get_dummies(df.drop(columns=["customerID", "Churn"]), drop_first=True)
+X = X.loc[:, X.dtypes != 'object']  # Keep only numeric columns just in case
 y = df["Churn"]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.2, random_state=42)
