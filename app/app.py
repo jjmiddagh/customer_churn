@@ -35,7 +35,7 @@ model = VotingClassifier(
 model.fit(X_train, y_train)
 
 # --- Prepare dashboard dataset ---
-df_with_ids = df_original.iloc[X_test.index].copy()
+df_with_ids = df_original.loc[X_test.index].copy()
 df_with_ids["Churn Probability"] = model.predict_proba(X_test)[:, 1]
 df_with_ids["Churn"] = y_test.reset_index(drop=True)
 
